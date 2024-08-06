@@ -5,6 +5,8 @@ import torch
 from transformers import DonutProcessor, VisionEncoderDecoderModel
 
 from PIL import Image
+from io import BytesIO
+import base64
 
 
 processor = DonutProcessor.from_pretrained("naver-clova-ix/donut-base-finetuned-cord-v2")
@@ -42,9 +44,15 @@ def process_document(image):
     
     return processor.token2json(sequence)
 
+# Streamlit
 uploaded_file = st.file_uploader(label="Add Receipt", type=['png','jpg','jpeg'], accept_multiple_files=False, key=None, help="Receipt image uploader", on_change=None, args=None, kwargs=None, disabled=False, label_visibility="visible")
 
-# Streamlit
 if uploaded_file is not None:
     img = Image.open(uploaded_file)  
     st.write(process_document(img))
+
+base64txt = st.text_area(label="Input Base64 Image", value="", height=None, max_chars=None, key=None, help=None, on_change=None, args=None, kwargs=None, placeholder=None, disabled=False, label_visibility="visible")
+
+if st.button("Process Image"):
+    img_64 = Image.open(BytesIO(base64.b64decode(base64txt)))
+    st.write(process_document(img_64))

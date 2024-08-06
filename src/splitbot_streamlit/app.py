@@ -4,6 +4,8 @@ import streamlit as st
 import torch
 from transformers import DonutProcessor, VisionEncoderDecoderModel
 
+from PIL import Image
+
 
 processor = DonutProcessor.from_pretrained("naver-clova-ix/donut-base-finetuned-cord-v2")
 model = VisionEncoderDecoderModel.from_pretrained("naver-clova-ix/donut-base-finetuned-cord-v2")
@@ -44,5 +46,5 @@ uploaded_file = st.file_uploader(label="Add Receipt", type=['png','jpg','jpeg'],
 
 # Streamlit
 if uploaded_file is not None:
-    bytes_data = uploaded_file.getvalue()
-    st.write(process_document(bytes_data))
+    img = Image.open(uploaded_file)  
+    st.write(process_document(img))
